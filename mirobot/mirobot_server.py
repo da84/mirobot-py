@@ -11,35 +11,35 @@ class MirobotServer:
         self.__socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__socket.bind((self.__address, self.__port))
         self.__socket.listen(1)
-        self.__callbacks_move = []
-        self.__callbacks_home = []
-        self.__callbacks_zero = []
-        self.__callbacks_connect = []
-        self.__callbacks_disconnect = []
+        self._callbacks_move = []
+        self._callbacks_home = []
+        self._callbacks_zero = []
+        self._callbacks_connect = []
+        self._callbacks_disconnect = []
         self.robot = Mirobot(wait=True, debug=False)
         print(" finished (Address = ", self.__address, ":", self.__port, ")", sep="")
         self.run()
 
     def __onConnect(self, ip):
         print("Client connected with IP:", ip)
-        for callback in self.__callbacks_connect:
+        for callback in self._callbacks_connect:
             callback()
 
     def __onDisconnect(self):
-        for callback in self.__callbacks_disconnect:
+        for callback in self._callbacks_disconnect:
             callback()
 
     def __onHome(self):
         self.robot.home_simultaneous()
-        for callback in self.__callbacks_disconnect:
+        for callback in self._callbacks_disconnect:
             callback()
 
     def __onZero(self):
-        for callback in self.__callbacks_zero:
+        for callback in self._callbacks_zero:
             callback()
 
     def __onMove(self, src, dst):
-        for callback in self.__callbacks_move:
+        for callback in self._callbacks_move:
             callback(src, dst)
 
     def run(self):
